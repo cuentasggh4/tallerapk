@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Taller</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#00e65c">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #090d16;
+            --theme-accent: #00ff66;
+            background-image: 
+                linear-gradient(rgba(0, 255, 102, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 102, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        body[data-theme="carbon"] { background-color: #111111 !important; background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px); --theme-accent: #d4d4d4; }
+        body[data-theme="ocean"] { background-color: #071923 !important; background-image: linear-gradient(rgba(45,212,191,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(45,212,191,.04) 1px, transparent 1px); --theme-accent: #2dd4bf; }
+        body[data-theme="ember"] { background-color: #1d120d !important; background-image: linear-gradient(rgba(251,146,60,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(251,146,60,.04) 1px, transparent 1px); --theme-accent: #fb923c; }
+        body[data-theme="carbon"] aside, body[data-theme="carbon"] header, body[data-theme="carbon"] main > section > div, body[data-theme="carbon"] #sec-usuarios, body[data-theme="carbon"] #sec-sucursales { background-color: #181818 !important; }
+        body[data-theme="ocean"] aside, body[data-theme="ocean"] header, body[data-theme="ocean"] main > section > div, body[data-theme="ocean"] #sec-usuarios, body[data-theme="ocean"] #sec-sucursales { background-color: #0b2733 !important; }
+        body[data-theme="ember"] aside, body[data-theme="ember"] header, body[data-theme="ember"] main > section > div, body[data-theme="ember"] #sec-usuarios, body[data-theme="ember"] #sec-sucursales { background-color: #2a1810 !important; }
+        body[data-theme="cyberpunk"] { background-color: #100d1a !important; background-image: linear-gradient(rgba(232,121,249,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,.04) 1px, transparent 1px); --theme-accent: #e879f9; }
+        body[data-theme="redline"] { background-color: #1a0c10 !important; background-image: linear-gradient(rgba(251,113,133,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(244,63,94,.035) 1px, transparent 1px); --theme-accent: #fb7185; }
+        body[data-theme="cupertino"] { background-color: #101820 !important; background-image: linear-gradient(rgba(96,165,250,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.035) 1px, transparent 1px); --theme-accent: #60a5fa; }
+        body[data-theme="violet"] { background-color: #17101f !important; background-image: linear-gradient(rgba(192,132,252,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(167,139,250,.035) 1px, transparent 1px); --theme-accent: #c084fc; }
+        body[data-theme="titanium"] { background-color: #151719 !important; background-image: linear-gradient(rgba(203,213,225,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,.035) 1px, transparent 1px); --theme-accent: #cbd5e1; }
+        body[data-theme="cyberpunk"] aside, body[data-theme="cyberpunk"] header, body[data-theme="cyberpunk"] main > section > div { background-color: #191323 !important; }
+        body[data-theme="redline"] aside, body[data-theme="redline"] header, body[data-theme="redline"] main > section > div { background-color: #241116 !important; }
+        body[data-theme="cupertino"] aside, body[data-theme="cupertino"] header, body[data-theme="cupertino"] main > section > div { background-color: #17212b !important; }
+        body[data-theme="violet"] aside, body[data-theme="violet"] header, body[data-theme="violet"] main > section > div { background-color: #20162b !important; }
+        body[data-theme="titanium"] aside, body[data-theme="titanium"] header, body[data-theme="titanium"] main > section > div { background-color: #202326 !important; }
+        body[data-theme] [class*="text-[#00ff66]"], body[data-theme] [class*="border-[#00ff66]"] { color: var(--theme-accent) !important; border-color: var(--theme-accent) !important; }
+        body[data-theme] [class*="bg-[#00e65c]"] { background-color: var(--theme-accent) !important; }
+        body[data-theme] [class*="hover:bg-[#00ff66]"]:hover { background-color: var(--theme-accent) !important; }
+        body[data-theme] [class*="bg-[#0d2319]"] { background-color: color-mix(in srgb, var(--theme-accent) 12%, #0d131f) !important; }
+        body[data-theme] .neon-border { border-color: color-mix(in srgb, var(--theme-accent) 45%, transparent); box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 18%, transparent); }
+        body[data-density="compact"] .nav-item { padding-block: .375rem !important; }
+        body[data-density="compact"] main > section { gap: .75rem !important; }
+        body[data-density="compact"] td, body[data-density="compact"] th { padding-block: .375rem !important; }
+        body[data-motion="reduced"] *, body[data-motion="reduced"] *::before, body[data-motion="reduced"] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+        .neon-border {
+            border: 1px solid rgba(0, 255, 102, 0.4);
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.15);
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-200 font-sans flex h-screen overflow-hidden">
+
+    <div id="pantalla-modalidad" class="fixed inset-0 z-[110] bg-[#090d16] flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-[#0d131f] border border-slate-800 rounded-2xl p-6 shadow-2xl">
+            <div class="mb-6">
+                <h1 class="font-bold text-white text-xl">¿Cómo usarás el taller?</h1>
+                <p class="text-xs text-slate-400 mt-1">Elige la modalidad de esta instalación.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="seleccionarModalidad('local')" class="text-left bg-[#131c2e] border border-slate-700 hover:border-[#00ff66] rounded-xl p-5 transition">
+                    <i data-lucide="monitor" class="w-6 h-6 text-[#00ff66] mb-3"></i>
+                    <strong class="block text-white">Uso local</strong>
+                    <span class="text-xs text-slate-400">Una sucursal · datos guardados en este equipo.</span>
+                </button>
+                <button onclick="seleccionarModalidad('sincronizada')" class="text-left bg-[#131c2e] border border-slate-700 hover:border-blue-400 rounded-xl p-5 transition">
+                    <i data-lucide="cloud" class="w-6 h-6 text-blue-300 mb-3"></i>
+                    <strong class="block text-white">Uso sincronizado</strong>
+                    <span class="text-xs text-slate-400">Suscripción mensual · sincronización online entre dispositivos.</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pantalla-auth" class="fixed inset-0 z-[100] bg-[#090d16] flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-[#0d131f] border border-slate-800 rounded-2xl p-6 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-11 h-11 rounded-xl bg-[#00e65c] flex items-center justify-center text-black text-xl">🛠️</div>
+                <div>
+
+                    <h1 class="font-bold text-white text-lg">Mi taller de reparaciones</h1>
+                    <p id="auth-subtitulo" class="text-xs text-slate-400">Inicia sesión para acceder al sistema.</p>
+                </div>
+            </div>
+
+            <div id="auth-error" class="hidden mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300"></div>
+
+            <form id="auth-login" class="space-y-4" onsubmit="event.preventDefault(); iniciarSesion();">
+                <div>
+                    <input id="local-url" type="hidden" value="local">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="login-usuario">Usuario</label>
+                    <input id="login-usuario" required autocomplete="username" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#00ff66]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="login-password">Contraseña</label>
+                    <input id="login-password" type="password" required autocomplete="current-password" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#00ff66]">
+                </div>
+                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer"><input id="login-recordar" type="checkbox" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Recordar usuario y contraseña en este equipo</label>
+                <button class="w-full bg-[#00e65c] hover:bg-[#00ff66] text-black font-bold py-3 rounded-lg text-sm transition" type="submit">Iniciar sesión</button>
+                <button type="button" onclick="volverASeleccionModalidad()" class="w-full text-xs text-slate-400 hover:text-white">Cambiar modalidad</button>
+            </form>
+
+            <form id="auth-sync" class="hidden space-y-4" onsubmit="event.preventDefault(); iniciarSesionSincronizada();">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="sync-url">Servidor de licencias</label>
+                    <input id="sync-url" type="url" required placeholder="https://sync.midominio.com" value="http://localhost:3000" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="sync-email">Correo electrónico</label>
+                    <input id="sync-email" type="email" required autocomplete="username" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="sync-password">Contraseña</label>
+                    <input id="sync-password" type="password" required autocomplete="current-password" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-400">
+                </div>
+                <button class="w-full bg-blue-300 hover:bg-blue-200 text-slate-950 font-bold py-3 rounded-lg text-sm transition" type="submit">Validar licencia e iniciar</button>
+                <button type="button" onclick="volverASeleccionModalidad()" class="w-full text-xs text-slate-400 hover:text-white">Cambiar modalidad</button>
+            </form>
+
+            <form id="auth-setup" class="hidden space-y-4" onsubmit="event.preventDefault(); crearAdministrador();">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="setup-nombre">Nombre del administrador</label>
+                    <input id="setup-nombre" required autocomplete="name" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#00ff66]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="setup-usuario">Usuario</label>
+                    <input id="setup-usuario" required autocomplete="username" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#00ff66]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="setup-password">Contraseña</label>
+                    <input id="setup-password" type="password" minlength="8" required autocomplete="new-password" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#00ff66]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1" for="setup-confirmar">Confirmar contraseña</label>
+                    <input id="setup-confirmar" type="password" minlength="8" required autocomplete="new-password" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-[#00ff66]">
+                </div>
+                <button class="w-full bg-[#00e65c] hover:bg-[#00ff66] text-black font-bold py-3 rounded-lg text-sm transition" type="submit">Crear administrador</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-buscador-global" class="fixed inset-0 z-[130] hidden bg-black/75 backdrop-blur-sm p-4" onclick="if (event.target === this) cerrarBuscadorGlobal()">
+        <section role="dialog" aria-modal="true" aria-labelledby="buscador-titulo" class="mx-auto mt-[8vh] w-full max-w-2xl overflow-hidden rounded-xl border border-slate-700 bg-[#0d131f] shadow-2xl">
+            <h2 id="buscador-titulo" class="sr-only">Búsqueda global</h2>
+            <div class="flex items-center gap-3 border-b border-slate-800 px-4">
+                <i data-lucide="search" class="h-5 w-5 shrink-0 text-emerald-300"></i>
+                <input id="buscador-global-input" type="search" autocomplete="off" placeholder="Buscar órdenes, clientes o piezas..." aria-label="Buscar órdenes, clientes o piezas" oninput="buscarGlobal(this.value)" class="h-14 min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-500">
+                <button type="button" onclick="cerrarBuscadorGlobal()" class="rounded border border-slate-700 px-2 py-1 text-[10px] text-slate-400" title="Cerrar búsqueda">ESC</button>
+            </div>
+            <div id="resultados-busqueda-global" role="listbox" aria-label="Resultados de búsqueda" class="max-h-[62vh] overflow-y-auto p-2"></div>
+            <div class="flex items-center justify-between border-t border-slate-800 px-4 py-2 text-[10px] text-slate-500"><span>↑ ↓ para elegir · Enter para abrir</span><span>Ctrl K / ⌘ K</span></div>
+        </section>
+    </div>
+
+    <!-- BARRA LATERAL -->
+    <aside class="w-64 bg-[#0d131f] border-r border-slate-800/80 flex flex-col justify-between p-3 select-none flex-shrink-0">
+        <div class="space-y-4 overflow-y-auto pr-1">
+            
+            <!-- Encabezado Taller & Logo -->
+            <div class="flex items-center gap-2.5 px-2 py-2 border-b border-slate-800/80 pb-3">
+                <div id="sidebar-logo-container" class="w-9 h-9 rounded-lg bg-[#00e65c] flex items-center justify-center text-black font-bold text-xs overflow-hidden shadow-[0_0_10px_rgba(0,255,102,0.4)] flex-shrink-0">
+                    <span id="logo-icon-default">🛠️</span>
+                    <img id="logo-img-custom" src="" class="w-full h-full object-cover hidden" alt="Logo Taller">
+                </div>
+                <div class="overflow-hidden">
+                    <h1 id="app-taller-nombre" class="font-bold text-sm text-white truncate leading-tight">Mi taller de reparaciones</h1>
+                    <span class="text-[10px] text-emerald-400 font-medium">Panel de Control</span>
+                </div>
+            </div>
+
+            <!-- BLOQUE PRINCIPAL -->
+            <div class="space-y-1">
+                <button onclick="nav('escritorio')" id="btn-escritorio" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold bg-[#0d2319] text-[#00ff66] neon-border transition">
+                    <i data-lucide="home" class="w-4 h-4"></i> Escritorio
+                </button>
+
+                <button onclick="nav('pos')" id="btn-pos" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-[#131c2e] transition">
+                    <i data-lucide="shopping-cart" class="w-4 h-4"></i> Punto de Venta
+                </button>
+
+                <button onclick="nav('configuracion')" id="btn-configuracion" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-[#131c2e] transition">
+                    <i data-lucide="settings" class="w-4 h-4"></i> Configuración
+                </button>
+            </div>
+
+            <!-- SECCIÓN: CATÁLOGOS -->
+            <div class="space-y-1 pt-2">
+                <div class="flex items-center justify-between px-2 text-slate-400 py-1">
+                    <span class="text-xs font-semibold text-slate-300">Catálogos</span>
+                    <button onclick="toggleGrupo('catalogos-list')" class="p-1 hover:bg-slate-800 rounded-lg text-slate-400">
+                        <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div id="catalogos-list" class="space-y-0.5">
+                    <button onclick="nav('clientes')" id="btn-clientes" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="users" class="w-4 h-4"></i> Clientes
+                    </button>
+
+                    <button onclick="nav('equipos')" id="btn-equipos" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="smartphone" class="w-4 h-4"></i> Equipos
+                    </button>
+
+                    <button onclick="nav('categorias')" id="btn-categorias" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="tag" class="w-4 h-4"></i> Categorías
+                    </button>
+
+                    <button onclick="nav('marcas')" id="btn-marcas" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="tag" class="w-4 h-4"></i> Marcas
+                    </button>
+
+                    <button onclick="nav('modelos')" id="btn-modelos" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="smartphone" class="w-4 h-4"></i> Modelos
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: OPERACIONES -->
+            <div class="space-y-1 pt-2">
+                <div class="flex items-center justify-between px-2 text-slate-400 py-1">
+                    <span class="text-xs font-semibold text-slate-300">Operaciones</span>
+                    <button onclick="toggleGrupo('operaciones-list')" class="p-1 hover:bg-slate-800 rounded-lg text-slate-400">
+                        <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <div id="operaciones-list" class="space-y-0.5">
+                    <button onclick="nav('inventario')" id="btn-inventario" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="clipboard-list" class="w-4 h-4"></i> Inventario
+                    </button>
+
+                    <button onclick="nav('reparaciones')" id="btn-reparaciones" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="wrench" class="w-4 h-4"></i> Reparaciones
+                    </button>
+
+                    <button onclick="nav('caja')" id="btn-caja" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="calculator" class="w-4 h-4"></i> Caja
+                    </button>
+
+                    <button onclick="nav('cotizaciones')" id="btn-cotizaciones" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Cotizaciones
+                    </button>
+
+                    <button onclick="nav('facturas')" id="btn-facturas" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="receipt" class="w-4 h-4"></i> Recibos / Facturas
+                    </button>
+
+                    <button onclick="nav('garantias')" id="btn-garantias" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> Garantías
+                    </button>
+                    <button onclick="nav('usuarios')" id="btn-usuarios" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="users" class="w-4 h-4"></i> Técnicos
+                    </button>
+                    <button onclick="nav('sucursales')" id="btn-sucursales" class="nav-item w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#131c2e] transition">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> Sucursales
+                    </button>
+                    <button onclick="nav('permisos')" id="btn-permisos" class="nav-item hidden w-full flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium text-slate-400 transition hover:bg-[#131c2e] hover:text-slate-200">
+                        <i data-lucide="shield-check" class="h-4 w-4"></i> Usuarios y permisos
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Estado BD -->
+        <div class="border-t border-slate-800/80 pt-2 px-2 flex items-center justify-between text-xs text-slate-400">
+            <span class="flex items-center gap-1.5"><i data-lucide="store" class="w-3.5 h-3.5"></i> Taller Local</span>
+            <span id="indicador-bd-status" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Base de Datos Conectada"></span>
+        </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+        
+        <!-- Header Superior -->
+        <header class="h-12 bg-[#0d131f]/80 border-b border-slate-800/80 px-6 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+                <span class="text-slate-400">Taller:</span>
+                <span id="header-taller-nombre" class="font-bold text-white">Mi taller de reparaciones</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="button" onclick="abrirBuscadorGlobal()" class="flex h-8 items-center gap-2 rounded-lg border border-slate-700 bg-[#131c2e] px-2.5 text-[11px] text-slate-300 hover:border-emerald-400 hover:text-white" title="Buscar en el taller (Ctrl K)">
+                    <i data-lucide="search" class="h-3.5 w-3.5"></i><span>Buscar</span><kbd class="hidden rounded border border-slate-600 px-1 text-[9px] sm:inline">Ctrl K</kbd>
+                </button>
+                <label class="sr-only" for="selector-sucursal">Sucursal activa</label>
+                <select id="selector-sucursal" onchange="cambiarSucursalDesdeUI(this.value)" class="hidden bg-[#131c2e] border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-white focus:outline-none focus:border-[#00ff66]"></select>
+                <span id="header-usuario" class="text-[11px] text-slate-400"></span>
+                <button onclick="cerrarSesion()" class="flex items-center gap-1.5 bg-[#131c2e] px-3 py-1 rounded-full text-[11px] border border-slate-700 hover:border-rose-400 hover:text-rose-300 transition" title="Cerrar sesión">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Salir
+                </button>
+            </div>
+        </header>
+
+        <!-- CONTENIDO DINÁMICO -->
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+            <!-- 1. ESCRITORIO -->
+            <section id="sec-escritorio" class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Panel Principal</h2>
+                        <p class="text-xs text-slate-400 mt-1">Resumen operativo de tu taller</p>
+                    </div>
+                    <button onclick="cargarDashboard()" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[#131c2e]" title="Actualizar panel"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                </div>
+                <div id="dashboard-metricas" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <button onclick="abrirRecepcionExpress()" class="bg-[#0d131f] border-2 border-[#00ff66]/40 hover:border-[#00ff66] p-5 rounded-2xl text-left flex items-center gap-4 transition shadow-lg group">
+                        <div class="w-12 h-12 rounded-xl bg-[#00ff66]/10 text-[#00ff66] flex items-center justify-center group-hover:scale-110 transition flex-shrink-0"><i data-lucide="zap" class="w-6 h-6"></i></div>
+                        <div><div class="font-bold text-white text-base">Recepción express</div><div class="text-xs text-slate-400">Registra cliente y equipo en pocos campos.</div></div>
+                    </button>
+                    <button onclick="abrirModalReparacion()" class="bg-[#0d131f] border-2 border-[#00ff66]/40 hover:border-[#00ff66] p-5 rounded-2xl text-left flex items-center gap-4 transition shadow-lg group">
+                        <div class="w-12 h-12 rounded-xl bg-[#00ff66]/10 text-[#00ff66] flex items-center justify-center group-hover:scale-110 transition flex-shrink-0">
+                            <i data-lucide="plus-circle" class="w-7 h-7"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-base">Nueva Orden de Reparación</div>
+                            <div class="text-xs text-slate-400">Recepción de equipo en 6 pasos, bloqueos y USB Tester.</div>
+                        </div>
+                    </button>
+
+                    <button onclick="nav('reparaciones')" class="bg-[#0d131f] border border-slate-800 hover:border-emerald-500/50 p-5 rounded-2xl text-left flex items-center gap-4 transition group">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition flex-shrink-0">
+                            <i data-lucide="wrench" class="w-7 h-7"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-base">Órdenes en Taller</div>
+                            <div class="text-xs text-slate-400">Consulta de diagnósticos y entregas registradas.</div>
+                        </div>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-bold text-white">Órdenes recientes</h3><button onclick="nav('reparaciones')" class="text-[11px] text-emerald-300 hover:text-emerald-200">Ver todas</button></div>
+                        <div id="dashboard-ordenes" class="space-y-2"></div>
+                    </div>
+                    <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-4"><h3 class="text-sm font-bold text-white">Salud del inventario</h3><button onclick="nav('inventario')" class="text-[11px] text-emerald-300 hover:text-emerald-200">Ver inventario</button></div>
+                        <div id="dashboard-inventario" class="space-y-2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PUNTO DE VENTA -->
+            <section id="sec-pos" class="space-y-6 hidden">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="shopping-cart" class="text-[#00ff66] w-5 h-5"></i> Punto de Venta (POS)
+                </h2>
+                <div class="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-4">
+                    <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-[1fr_120px_auto] gap-3 text-xs">
+                            <select id="pos-producto" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"></select>
+                            <input id="pos-cantidad" type="number" min="1" value="1" placeholder="Cantidad" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                            <button onclick="agregarAlCarritoPOS()" class="bg-[#00e65c] hover:bg-[#00ff66] text-black font-bold px-4 py-2 rounded-lg text-xs">Agregar</button>
+                        </div>
+                        <div id="pos-carrito" class="space-y-2 min-h-24"></div>
+                    </div>
+                    <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 space-y-3 text-xs">
+                        <select id="pos-cliente" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"></select>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input id="pos-descuento" type="number" min="0" step="0.01" value="0" placeholder="Descuento" oninput="renderCarritoPOS()" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white">
+                            <input id="pos-impuesto" type="number" min="0" step="0.01" value="0" placeholder="Impuesto" oninput="renderCarritoPOS()" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white">
+                        </div>
+                        <select id="pos-metodo" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option><option>Otro</option></select>
+                        <div id="pos-resumen" class="border-t border-slate-800 pt-3"></div>
+                        <button onclick="registrarVentaPOS()" class="w-full bg-[#00e65c] hover:bg-[#00ff66] text-black font-bold px-5 py-2.5 rounded-lg text-xs">Cobrar venta</button>
+                    </div>
+                </div>
+                <div id="lista-pos" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div>
+            </section>
+
+            <section id="sec-equipos" class="space-y-6 hidden">
+                <h2 class="text-xl font-bold text-white">Catálogo de Equipos</h2>
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 flex gap-3"><input id="catalogo-equipos-nombre" placeholder="Nombre del equipo" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><button onclick="agregarCatalogo('equipos')" class="bg-[#00e65c] text-black font-bold px-4 rounded-lg text-xs">Agregar</button></div>
+                <div id="lista-catalogo-equipos" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div>
+            </section>
+            <section id="sec-categorias" class="space-y-6 hidden">
+                <h2 class="text-xl font-bold text-white">Categorías de Servicio</h2>
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 flex gap-3"><input id="catalogo-categorias-nombre" placeholder="Nombre de la categoría" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><button onclick="agregarCatalogo('categorias')" class="bg-[#00e65c] text-black font-bold px-4 rounded-lg text-xs">Agregar</button></div>
+                <div id="lista-catalogo-categorias" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div>
+            </section>
+            <section id="sec-marcas" class="space-y-6 hidden">
+                <h2 class="text-xl font-bold text-white">Catálogo de Marcas</h2>
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 flex gap-3"><input id="catalogo-marcas-nombre" placeholder="Nombre de la marca" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><button onclick="agregarCatalogo('marcas')" class="bg-[#00e65c] text-black font-bold px-4 rounded-lg text-xs">Agregar</button></div>
+                <div id="lista-catalogo-marcas" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div>
+            </section>
+            <section id="sec-modelos" class="space-y-6 hidden">
+                <h2 class="text-xl font-bold text-white">Catálogo de Modelos</h2>
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 flex items-center gap-3">
+                    <label for="filtro-modelos-marca" class="text-xs font-semibold text-slate-300 whitespace-nowrap">Filtrar por marca</label>
+                    <select id="filtro-modelos-marca" onchange="cargarCatalogo('modelos')" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"><option value="">Todas las marcas</option></select>
+                </div>
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 flex gap-3"><input id="catalogo-modelos-nombre" placeholder="Nombre del modelo" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><input id="catalogo-modelos-marca" placeholder="Marca" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><button onclick="agregarCatalogo('modelos')" class="bg-[#00e65c] text-black font-bold px-4 rounded-lg text-xs">Agregar</button></div>
+                <div id="lista-catalogo-modelos" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div>
+            </section>
+
+            <section id="sec-inventario" class="space-y-6 hidden px-6 py-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-white">Gestión de Inventario</h2>
+                    <div class="flex gap-2">
+                        <button onclick="abrirRecepcionMercancia()" class="flex items-center gap-2 border border-slate-700 px-3 py-2 rounded-lg text-xs text-slate-200 hover:border-emerald-400" title="Recibir mercancía de un proveedor"><i data-lucide="package-plus" class="w-4 h-4"></i> Recibir mercancía</button>
+                        <button onclick="exportarInventarioCSV()" class="flex items-center gap-2 border border-slate-700 px-3 py-2 rounded-lg text-xs text-slate-200 hover:border-emerald-400" title="Exportar inventario para hojas de cálculo"><i data-lucide="download" class="w-4 h-4"></i> Exportar CSV</button>
+                        <button onclick="crearNuevoProducto()" class="bg-[#00ff66] text-black font-bold px-4 py-2 rounded-lg text-xs hover:bg-[#00e65c]">
+                            + Nuevo Producto
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Alertas de Stock Bajo -->
+                <div id="alertas-stock-bajo"></div>
+                
+                <!-- Buscador -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-[#0d131f] border border-slate-800 rounded-2xl p-4">
+                    <input 
+                        type="text" 
+                        id="inventario-buscar" 
+                        placeholder="Buscar nombre, SKU o categoría" 
+                        class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-sm"
+                        oninput="buscarInventario(event)"
+                    />
+                    <input type="search" id="inventario-compatibilidad" placeholder="Buscar modelo compatible con stock" aria-label="Buscar repuestos por modelo compatible" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-sm" oninput="buscarCompatibilidadInventario(event)" />
+                </div>
+                
+                <!-- Tabla de Productos -->
+                <div id="inventario-tabla" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs overflow-auto">
+                    <p class="text-slate-400 text-center py-8">Cargando inventario...</p>
+                </div>
+            </section>
+            <!-- 3. CONFIGURACIÓN -->
+            <section id="sec-configuracion" class="space-y-6 hidden">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="settings" class="text-[#00ff66] w-5 h-5"></i> Configuración del Taller
+                </h2>
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-6 space-y-6 text-xs text-slate-300">
+                    <div class="flex items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div><h3 class="font-bold text-white text-sm">Tema de interfaz</h3><p class="text-slate-400 text-[11px]">Personaliza el aspecto de esta instalación.</p></div>
+                        <select id="cfg-tema" onchange="aplicarTema(this.value)" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><option value="aurora">Aurora · verde</option><option value="carbon">Carbón</option><option value="ocean">Océano · cian</option><option value="ember">Ámbar</option><option value="cyberpunk">Cyberpunk</option><option value="redline">Redline</option><option value="cupertino">Cupertino Pro</option><option value="violet">Violeta</option><option value="titanium">Stealth Titanium</option></select>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4 border-b border-slate-800 pb-4 md:grid-cols-2">
+                        <div class="space-y-2"><label class="block font-semibold text-slate-200" for="cfg-densidad">Densidad de interfaz</label><select id="cfg-densidad" onchange="aplicarDensidad(this.value)" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><option value="normal">Cómoda</option><option value="compacta">Compacta</option></select><p class="text-slate-500 text-[11px]">Ajusta el espacio de navegación y tablas.</p></div>
+                        <label class="flex items-start gap-2 self-center cursor-pointer"><input type="checkbox" id="cfg-reducir-movimiento" onchange="aplicarMovimientoReducido(this.checked)" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-[#00ff66]"><span><strong class="block text-slate-200">Reducir movimiento</strong><span class="text-slate-500 text-[11px]">Limita transiciones y animaciones.</span></span></label>
+                    </div>
+                    <div class="border-b border-slate-800 pb-5 space-y-4">
+                        <div><h3 class="font-bold text-white text-sm">Folio de órdenes</h3><p id="cfg-folio-sucursal" class="text-slate-400 text-[11px]">Configura la sucursal activa.</p></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="space-y-2"><label class="block font-semibold text-slate-200" for="cfg-folio-prefijo">Letra de sucursal</label><input id="cfg-folio-prefijo" type="text" maxlength="1" pattern="[A-Za-z]" autocomplete="off" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white uppercase focus:outline-none focus:border-[#00ff66]"></div>
+                            <div class="space-y-2"><label class="block font-semibold text-slate-200" for="cfg-folio-inicio">Siguiente número disponible</label><input id="cfg-folio-inicio" type="number" min="1" step="1" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"></div>
+                            <div class="space-y-2"><label class="block font-semibold text-slate-200" for="cfg-folio-digitos">Dígitos del folio</label><input id="cfg-folio-digitos" type="number" min="1" max="10" step="1" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"></div>
+                        </div>
+                    </div>
+                    <div class="border-b border-slate-800 pb-4">
+                        <h3 class="font-bold text-white text-sm mb-1">Personalización de Nombre y Logo</h3>
+                        <p class="text-slate-400 text-[11px]">Modifica los datos globales que se mostrarán en la interfaz y comprobantes.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block font-semibold text-slate-200">Nombre del Taller</label>
+                            <input type="text" id="cfg-nombre-taller" placeholder="Ej. Mi taller de reparaciones" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block font-semibold text-slate-200">Logo del Taller</label>
+                            <input type="file" id="cfg-logo-file" accept="image/*" onchange="convertirImagenABase64(this)" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-slate-300 focus:outline-none">
+                            <input type="hidden" id="cfg-logo-base64">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800 pt-5 space-y-4">
+                        <div>
+                            <h3 class="font-bold text-white text-sm mb-1">Opciones Regionales</h3>
+                            <p class="text-slate-400 text-[11px]">Define cómo se muestran fechas, importes y horarios en el taller.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-pais">País o región</label>
+                                <select id="cfg-pais" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                    <option value="MX">México</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="AR">Argentina</option>
+                                    <option value="CL">Chile</option>
+                                    <option value="ES">España</option>
+                                    <option value="US">Estados Unidos</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-moneda">Moneda</label>
+                                <select id="cfg-moneda" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                    <option value="MXN">Peso mexicano (MXN)</option>
+                                    <option value="COP">Peso colombiano (COP)</option>
+                                    <option value="ARS">Peso argentino (ARS)</option>
+                                    <option value="CLP">Peso chileno (CLP)</option>
+                                    <option value="EUR">Euro (EUR)</option>
+                                    <option value="USD">Dólar estadounidense (USD)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-formato-fecha">Formato de fecha</label>
+                                <select id="cfg-formato-fecha" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-zona-horaria">Zona horaria</label>
+                                <select id="cfg-zona-horaria" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                    <option value="America/Mexico_City">Ciudad de México</option>
+                                    <option value="America/Bogota">Bogotá</option>
+                                    <option value="America/Argentina/Buenos_Aires">Buenos Aires</option>
+                                    <option value="America/Santiago">Santiago</option>
+                                    <option value="Europe/Madrid">Madrid</option>
+                                    <option value="America/New_York">Nueva York</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-separador-decimal">Separador decimal</label>
+                                <select id="cfg-separador-decimal" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                    <option value=".">Punto (1,234.56)</option>
+                                    <option value=",">Coma (1.234,56)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800 pt-5 space-y-4">
+                        <div>
+                            <h3 class="font-bold text-white text-sm mb-1">Pie de ticket</h3>
+                            <p class="text-slate-400 text-[11px]">Este texto y estas opciones estarán disponibles para los tickets y recibos.</p>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block font-semibold text-slate-200" for="cfg-pie-ticket">Mensaje del pie</label>
+                            <textarea id="cfg-pie-ticket" rows="3" maxlength="240" placeholder="Gracias por confiar en nosotros." class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white resize-y focus:outline-none focus:border-[#00ff66]"></textarea>
+                        </div>
+                        <div class="flex flex-wrap gap-5 text-slate-300">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cfg-ticket-mostrar-logo" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Mostrar logo</label>
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="cfg-ticket-mostrar-nombre" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Mostrar nombre del taller</label>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-800 pt-5 space-y-4">
+                        <div>
+                            <h3 class="font-bold text-white text-sm mb-1">Sincronización entre sucursales</h3>
+                            <p class="text-slate-400 text-[11px]">La versión web sincroniza al iniciar sesión y después de cada cambio. En escritorio puedes usar sincronización manual.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-sync-url">URL del servidor</label>
+                                <input id="cfg-sync-url" type="url" placeholder="https://sync.midominio.com" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                            </div>
+                            <div id="sync-token-config" class="space-y-2">
+                                <label class="block font-semibold text-slate-200" for="cfg-sync-token">Token de sincronización</label>
+                                <input id="cfg-sync-token" type="password" autocomplete="off" placeholder="Token configurado en el servidor" class="w-full bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="sincronizarAhora()" class="bg-blue-400 hover:bg-blue-300 text-slate-950 font-bold px-5 py-2 rounded-lg text-xs flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i> Sincronizar ahora</button>
+                            <span id="sync-estado" class="text-[11px] text-slate-500">Sin sincronizar</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-4 border-t border-slate-800">
+                        <button onclick="guardarAjustesTaller()" class="bg-[#00e65c] hover:bg-[#00ff66] text-black font-bold px-6 py-2.5 rounded-lg text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,102,0.2)]">
+                            <i data-lucide="save" class="w-4 h-4"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REPARACIONES -->
+            <section id="sec-reparaciones" class="space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i data-lucide="wrench" class="text-[#00ff66] w-5 h-5"></i> Gestión de Reparaciones
+                    </h2>
+                    <div class="flex gap-2">
+                        <button onclick="abrirRecepcionExpress()" class="bg-[#00e65c] text-black font-bold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 hover:bg-[#00ff66] transition" title="Recepción rápida de equipo"><i data-lucide="zap" class="w-4 h-4"></i> Recepción express</button>
+                        <button onclick="abrirModalReparacion()" class="bg-[#131c2e] text-slate-200 font-semibold px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 border border-slate-700 hover:border-emerald-400 transition"><i data-lucide="plus" class="w-4 h-4"></i> Orden completa</button>
+                    </div>
+                </div>
+                <div id="contenedor-lista-reparaciones" class="space-y-3"></div>
+            </section>
+
+            <section id="sec-caja" class="space-y-6 hidden"><div><h2 class="text-xl font-bold text-white">Control de Caja</h2></div><div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5"><div class="text-xs font-semibold text-slate-300 mb-3">Registrar Movimiento</div><div class="grid grid-cols-1 md:grid-cols-5 gap-3"><select id="caja-tipo" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select><input id="caja-concepto" placeholder="Concepto" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"><input id="caja-monto" type="number" min="0" step="0.01" placeholder="Monto" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"><button onclick="registrarMovimientoCaja()" class="bg-[#00e65c] text-black font-bold rounded-lg text-xs hover:bg-[#00ff66]">Registrar</button></div></div><div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5"><div class="flex items-center justify-between mb-4"><div><div class="text-xs font-semibold text-slate-300">Filtrar Movimientos</div><p class="text-[11px] text-slate-500">Selecciona una fecha para filtrar</p></div><div class="flex gap-2"><input id="caja-fecha-filtro" type="date" onchange="cargarCaja()" class="bg-[#131c2e] border border-slate-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#00ff66]"><button onclick="document.getElementById('caja-fecha-filtro').value = ''; cargarCaja();" class="bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-xs hover:bg-slate-600">Limpiar</button></div></div></div><div id="resumen-caja" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-3"><button onclick="hacerCorteDiario()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 justify-center"><i data-lucide="scissors" class="w-4 h-4"></i> Corte Diario de Hoy</button><button onclick="nav('reportes-caja')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 justify-center"><i data-lucide="bar-chart-3" class="w-4 h-4"></i> Ver Reportes</button></div><div id="lista-caja" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div></section><section id="sec-reportes-caja" class="space-y-6 hidden"><h2 class="text-xl font-bold text-white">Reportes de Caja</h2><button onclick="nav('caja')" class="bg-slate-700 text-slate-200 px-4 py-2 rounded-lg text-xs hover:bg-slate-600">&larr; Volver a Caja</button><div id="lista-reportes-caja" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div></section>
+            <section id="sec-cotizaciones" class="space-y-6 hidden">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-white">Cotizador del taller</h2>
+                    <div class="flex gap-2">
+                        <button onclick="alternarCotizadorPantallasIphone()" class="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 px-3 py-2 rounded-lg text-[11px] font-semibold">Pantallas iPhone</button>
+                        <button onclick="document.getElementById('cotizador-file-input').click()" class="bg-[#1f2f4a] text-slate-100 border border-slate-700 px-3 py-2 rounded-lg text-[11px] font-semibold"><i data-lucide="file-spreadsheet" class="mr-1 inline-block h-4 w-4"></i> Importar PDF / Excel</button>
+                        <button onclick="vaciarInventarioCotizador()" class="bg-rose-500/15 text-rose-300 border border-rose-500/30 px-3 py-2 rounded-lg text-[11px] font-semibold">🗑️ Vaciar</button>
+                    </div>
+                </div>
+
+                <input type="file" id="cotizador-file-input" accept=".pdf,.xlsx,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
+
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <input id="cot-cliente" placeholder="Cliente" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-xs">
+                    <input id="cot-detalle" placeholder="Servicio o reparación" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-xs md:col-span-2">
+                    <input id="cot-monto" type="number" min="0" step="0.01" placeholder="Monto" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-xs">
+                    <button onclick="crearCotizacion()" class="bg-[#00e65c] text-black font-bold rounded-lg text-xs">Crear cotización</button>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-[1.6fr_0.9fr] gap-6">
+                    <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 space-y-4">
+                        <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
+                            <h3 class="text-sm font-bold text-[#00ff66]">Inventario cotizador</h3>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input id="cotizador-buscar" type="text" placeholder="Buscar refacción o modelo" class="w-52 bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white text-xs">
+                                <select id="cotizador-filtro-marca" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white text-xs min-w-[110px]">
+                                    <option value="">Todas las marcas</option>
+                                </select>
+                                <select id="cotizador-filtro-calidad" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white text-xs min-w-[110px]">
+                                    <option value="">Toda la calidad</option>
+                                </select>
+                                <select id="cotizador-filtro-tipo" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white text-xs min-w-[140px]">
+                                    <option value="">Todos los tipos</option>
+                                </select>
+                                <select id="cotizador-filtro-modelo" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white text-xs min-w-[150px]">
+                                    <option value="">Todos los modelos</option>
+                                </select>
+                                <select id="cotizador-ordenar" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white text-xs min-w-[140px]">
+                                    <option value="modelo">Ordenar: modelo</option>
+                                    <option value="marca">Ordenar: marca</option>
+                                    <option value="precio_venta">Ordenar: precio venta</option>
+                                    <option value="precio_costo">Ordenar: precio costo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="cotizador-resultados" class="overflow-x-auto"></div>
+                    </div>
+
+                    <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 space-y-3">
+                        <h3 class="text-sm font-bold text-[#00ff66]">Resumen rápido</h3>
+                        <div id="cotizador-resumen" class="space-y-3 text-xs text-slate-300"></div>
+                    </div>
+                </div>
+
+                <div id="cotizador-iphone-panel" class="hidden space-y-4 border-t border-slate-800 pt-5">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-emerald-300">Cotizador de pantallas iPhone</h3>
+                            <p class="mt-1 text-[11px] text-slate-500">Importa un XLSX del proveedor. El costo viene del libro y la venta se calcula con la tabla iPhone por modelo y calidad.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="file" id="cotizador-iphone-file-input" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
+                            <button type="button" onclick="document.getElementById('cotizador-iphone-file-input').click()" class="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-[11px] font-semibold text-emerald-300">Importar XLSX de pantallas</button>
+                            <button type="button" onclick="vaciarCotizadorPantallasIphone()" class="rounded-lg border border-slate-700 px-3 py-2 text-[11px] text-slate-300">Vaciar</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <input id="cotizador-iphone-buscar" type="search" placeholder="Buscar modelo, calidad o pieza" class="w-full max-w-sm rounded-lg border border-slate-700 bg-[#131c2e] p-2 text-xs text-white">
+                        <span id="cotizador-iphone-resumen" class="text-[11px] text-slate-400"></span>
+                    </div>
+                    <div id="cotizador-iphone-resultados" class="overflow-x-auto rounded-lg border border-slate-800"></div>
+                </div>
+
+                <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-white">Cotizaciones guardadas</h3>
+                    </div>
+                    <div id="lista-cotizaciones"></div>
+                </div>
+            </section>
+            <section id="sec-facturas" class="space-y-6 hidden"><h2 class="text-xl font-bold text-white">Recibos / Facturas</h2><div id="lista-facturas" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div></section>
+            <section id="sec-garantias" class="space-y-6 hidden"><h2 class="text-xl font-bold text-white">Control de Garantías</h2><div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5 grid grid-cols-1 md:grid-cols-5 gap-3"><input id="gar-folio" placeholder="Folio" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><input id="gar-cliente" placeholder="Cliente" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><select id="gar-equipo" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white focus:outline-none focus:border-[#00ff66]"><option value="">-- Seleccionar Equipo Entregado --</option></select><input id="gar-dias" type="number" min="1" value="30" placeholder="Días" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white"><button onclick="registrarGarantia()" class="bg-[#00e65c] text-black font-bold rounded-lg text-xs">Registrar garantía</button></div><div id="lista-garantias" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs"></div></section>
+
+        </main>
+        <section id="sec-usuarios" class="space-y-6 hidden px-6 py-4"><h2 class="text-xl font-bold text-white">Gestión de Técnicos</h2><div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5"><div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-xs"><input id="tec-nombre" placeholder="Nombre" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><input id="tec-usuario" placeholder="Usuario" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><input id="tec-email" placeholder="Email" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><select id="tec-especialidad" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><option>General</option><option>Pantallas</option><option>Baterías</option></select><input id="tec-password" type="password" placeholder="Contraseña" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><button onclick="registrarNuevoTecnico()" class="bg-[#00e65c] text-black font-bold rounded-lg text-xs">Crear</button></div></div><div id="lista-tecnicos" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs mt-4"></div><div id="ia-analisis" class="mt-6"></div><div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5"><h3 class="text-sm font-bold text-white mb-3">Preguntar al asistente</h3><div class="flex gap-2"><input id="ia-pregunta" placeholder="Ej. ¿Qué debo reponer?" class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-xs"><button onclick="preguntarIA()" class="bg-blue-400 text-slate-950 font-bold rounded-lg px-4 text-xs">Consultar</button></div><div id="ia-respuesta" class="mt-3 text-xs text-slate-300"></div></div></section>
+        <section id="sec-clientes" class="space-y-6 hidden px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-white">Gestión de Clientes</h2>
+                <button onclick="crearNuevoCliente()" class="bg-[#00ff66] text-black font-bold px-4 py-2 rounded-lg text-xs hover:bg-[#00e65c]">
+                    + Nuevo Cliente
+                </button>
+            </div>
+            
+            <div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4">
+                <div class="flex gap-3">
+                    <input 
+                        type="text" 
+                        id="cliente-buscar" 
+                        placeholder="Buscar por nombre, teléfono o email..." 
+                        class="flex-1 bg-[#131c2e] border border-slate-700 rounded-lg p-2.5 text-white text-sm"
+                        oninput="buscarClientes(event)"
+                    />
+                </div>
+            </div>
+            
+            <div id="clientes-tabla" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs">
+                <p class="text-slate-400 text-center py-8">Cargando clientes...</p>
+            </div>
+        </section>
+        <section id="sec-sucursales" class="space-y-6 hidden px-6 py-4"><h2 class="text-xl font-bold text-white">Gestión de Sucursales</h2><div class="bg-[#0d131f] border border-slate-800 rounded-2xl p-5"><div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-xs"><input id="suc-nombre" placeholder="Nombre" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><input id="suc-direccion" placeholder="Dirección" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><input id="suc-telefono" placeholder="Teléfono" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><input id="suc-gerente" placeholder="Gerente" class="bg-[#131c2e] border border-slate-700 rounded-lg p-2 text-white"><button onclick="registrarNuevaSucursal()" class="bg-[#00e65c] text-black font-bold rounded-lg text-xs">Crear</button></div></div><div id="lista-sucursales" class="bg-[#0d131f] border border-slate-800 rounded-2xl p-4 text-xs mt-4"></div></section>
+        <section id="sec-permisos" class="hidden space-y-5 px-6 py-4">
+            <header class="flex flex-wrap items-center justify-between gap-3"><div><h2 class="text-xl font-bold text-white">Usuarios y permisos</h2><p class="mt-1 text-xs text-slate-400">Cuentas, roles y sucursales asignadas</p></div><button id="usuarios-crear" type="button" onclick="abrirEditorUsuario()" class="flex items-center gap-2 rounded-lg bg-[#00e65c] px-3 py-2 text-xs font-bold text-black"><i data-lucide="user-plus" class="h-4 w-4"></i> Nuevo usuario</button></header>
+            <div class="flex flex-wrap items-end gap-3 border-b border-slate-800 pb-4"><label for="usuarios-filtro-sucursal" class="text-xs text-slate-300">Sucursal</label><select id="usuarios-filtro-sucursal" onchange="renderizarUsuariosAdmin()" class="rounded border border-slate-700 bg-[#131c2e] px-3 py-2 text-xs text-white"></select><span id="usuarios-alcance" class="text-[11px] text-slate-500"></span></div>
+            <div id="usuarios-lista" class="overflow-x-auto rounded-lg border border-slate-800 bg-[#0d131f]"></div>
+        </section>
+    </div>
+
+    <!-- MODAL DE REGISTRO EN 6 PASOS -->
+    <div id="modal-reparacion" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-[#0b101a] border border-slate-800 w-full max-w-4xl rounded-2xl max-h-[92vh] flex flex-col overflow-hidden shadow-2xl">
+            
+            <!-- Header Modal -->
+            <div class="p-4 border-b border-slate-800/80 flex justify-between items-center bg-[#0e1626]">
+                <div class="flex items-center gap-2 text-white font-bold text-sm">
+                    <i data-lucide="wrench" class="text-[#00ff66] w-4 h-4"></i> Recepción de Equipo & Nueva Orden
+                </div>
+                <button onclick="cerrarModalReparacion()" class="text-slate-400 hover:text-white transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Cuerpo Modal -->
+            <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
+
+                <!-- PASO 1: CLIENTE -->
+                <div class="space-y-2">
+                    <div class="text-[11px] font-bold text-[#00ff66] uppercase tracking-wider">PASO 1: CLIENTE</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="md:col-span-2">
+                            <label class="block text-slate-400 mb-1">Seleccionar Cliente</label>
+                            <select id="rep-cliente-select" class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                <option value="">-- Seleccionar de la lista --</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="nav('clientes'); cerrarModalReparacion();" class="w-full bg-[#172338] hover:bg-[#1f2f4a] border border-slate-700 text-slate-200 font-medium py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition">
+                                <i data-lucide="user-plus" class="w-4 h-4"></i> Crear Nuevo Cliente Rápidamente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASO 2: DATOS DEL DISPOSITIVO -->
+                <div class="space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="text-[11px] font-bold text-[#00ff66] uppercase tracking-wider">PASO 2: DATOS DEL DISPOSITIVO</div>
+                        <button type="button" onclick="reconocerTelefonoConectado()" class="inline-flex items-center gap-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-[11px] font-semibold text-emerald-300 hover:border-emerald-400" title="Leer marca y modelo del teléfono conectado"><i data-lucide="usb" class="h-4 w-4"></i> Reconocer por USB</button>
+                    </div>
+                    <p id="rep-device-status" aria-live="polite" class="text-[11px] text-slate-400"></p>
+                    <div id="rep-device-drivers" class="hidden rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-[11px] text-slate-300">
+                        <p class="mb-2">Guías de conexión y controladores:</p>
+                        <div class="flex flex-wrap gap-x-4 gap-y-2"><a href="https://driver-unlocktool.s3-website-r2.s3cloud.vn/" target="_blank" rel="noopener noreferrer" class="text-amber-300 underline underline-offset-2">Drivers universales UnlockTool</a><a href="https://developer.android.com/studio/run/win-usb" target="_blank" rel="noopener noreferrer" class="text-sky-300 underline underline-offset-2">Controlador USB Android</a><a href="https://developer.android.com/tools/releases/platform-tools" target="_blank" rel="noopener noreferrer" class="text-sky-300 underline underline-offset-2">ADB Platform Tools</a><a href="https://support.apple.com/en-us/118290" target="_blank" rel="noopener noreferrer" class="text-sky-300 underline underline-offset-2">Apple Devices para Windows</a><a href="https://github.com/libimobiledevice/libimobiledevice" target="_blank" rel="noopener noreferrer" class="text-sky-300 underline underline-offset-2">Herramientas para iPhone</a></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Tipo de Equipo</label>
+                            <select id="rep-tipo-equipo" class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                <option value="Celular / Smartphone">Celular / Smartphone</option>
+                                <option value="Tablet / iPad">Tablet / iPad</option>
+                                <option value="Laptop / PC">Laptop / PC</option>
+                                <option value="Consola / Otro">Consola / Otro</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Marca *</label>
+                            <select id="rep-marca" onchange="cargarModelosPorMarca()" class="w-full bg-[#121a2b] border border-emerald-500/80 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                <option value="">-- Seleccionar Marca --</option>
+                                <option value="Apple">Apple</option>
+                                <option value="Samsung">Samsung</option>
+                                <option value="Motorola">Motorola</option>
+                                <option value="Xiaomi">Xiaomi</option>
+                                <option value="Oppo">Oppo</option>
+                                <option value="ZTE">ZTE</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Modelo *</label>
+                            <select id="rep-modelo" class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                <option value="">-- Selecciona una marca primero --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <label class="block text-slate-400">IMEI o número de serie<input type="text" id="rep-imei" maxlength="64" autocomplete="off" class="mt-1 w-full rounded-xl border border-slate-700/80 bg-[#121a2b] p-2.5 text-white focus:border-[#00ff66] focus:outline-none"></label>
+                        <label class="block text-slate-400">Sistema / datos MTP<input type="text" id="rep-sistema-detectado" readonly class="mt-1 w-full rounded-xl border border-slate-700/80 bg-[#121a2b] p-2.5 text-slate-300"></label>
+                    </div>
+                    <p class="text-[10px] text-slate-500">La lectura se ejecuta solo al pulsar el botón. Android puede entregar la serie ADB; el IMEI puede estar restringido por el dispositivo.</p>
+
+                    <div>
+                        <label class="block text-slate-400 mb-1">Falla Reportada por el Cliente *</label>
+                        <input type="text" id="rep-falla" placeholder="No carga, pantalla estrellada, mojado..." class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                    </div>
+                </div>
+
+                <!-- PASO 3: REPARACIONES HARDWARE -->
+                <div class="space-y-3">
+                    <div class="text-[11px] font-bold text-[#00ff66] uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="w-4 h-4"></i> PASO 3: REPARACIONES EN LÍNEA / TARJETA / HARDWARE
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:border-slate-700 transition">
+                            <input type="checkbox" id="chk-microsoldadura" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-[#00ff66] focus:ring-0">
+                            <div>
+                                <div class="font-bold text-white">Líneas de Placa / Microsoldadura</div>
+                                <div class="text-[11px] text-slate-400">Reparación de pistas dañadas o líneas cortocircuitadas.</div>
+                            </div>
+                        </label>
+
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:border-slate-700 transition">
+                            <input type="checkbox" id="chk-centro-carga" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-[#00ff66] focus:ring-0">
+                            <div>
+                                <div class="font-bold text-white">Centro de Carga</div>
+                                <div class="text-[11px] text-slate-400">Cambio de conector/pin individual o placa sub-board.</div>
+                            </div>
+                        </label>
+
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:border-slate-700 transition">
+                            <input type="checkbox" id="chk-bateria" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-[#00ff66] focus:ring-0">
+                            <div>
+                                <div class="font-bold text-white">Cambio de Batería</div>
+                                <div class="text-[11px] text-slate-400">Sustitución por desgaste o hinchamiento.</div>
+                            </div>
+                        </label>
+
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:border-slate-700 transition">
+                            <input type="checkbox" id="chk-pantalla" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-[#00ff66] focus:ring-0">
+                            <div>
+                                <div class="font-bold text-white">Cambio de Pantalla</div>
+                                <div class="text-[11px] text-slate-400">Módulo completo o pantalla táctil/display.</div>
+                            </div>
+                        </label>
+
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-start gap-3 cursor-pointer hover:border-slate-700 transition md:col-span-2">
+                            <input type="checkbox" id="chk-limpieza" class="mt-0.5 rounded border-slate-700 bg-slate-900 text-[#00ff66] focus:ring-0">
+                            <div>
+                                <div class="font-bold text-white">Limpieza y Líquidos</div>
+                                <div class="text-[11px] text-slate-400">Mantenimiento por corrosión o sulfatación.</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- PASO 4: BLOQUEOS -->
+                <div class="space-y-3">
+                    <div class="text-[11px] font-bold text-[#00ff66] uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="lock" class="w-4 h-4"></i> PASO 4: TIPOS DE BLOQUEO REGISTRADOS
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        
+                        <div class="bg-[#121a2b] border border-slate-800/80 p-3 rounded-xl space-y-3">
+                            <div class="flex items-center gap-1.5 font-bold text-slate-200">
+                                <i data-lucide="key" class="w-3.5 h-3.5 text-[#00ff66]"></i> Bloqueos de Usuario Locales
+                            </div>
+                            <div class="flex items-center gap-4 text-slate-300">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-pin" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> PIN</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-pass" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Contraseña</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-patron" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Patrón</label>
+                            </div>
+                            <input type="text" id="rep-clave-usuario" placeholder="Ingresar clave / PIN / Patrón si aplica" class="w-full bg-[#0b101a] border border-slate-700/80 rounded-lg p-2 text-white focus:outline-none focus:border-[#00ff66]">
+                        </div>
+
+                        <div class="bg-[#121a2b] border border-slate-800/80 p-3 rounded-xl space-y-3">
+                            <div class="flex items-center gap-1.5 font-bold text-slate-200">
+                                <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-[#00ff66]"></i> Bloqueos de Cuenta / Antirrobo
+                            </div>
+                            <div class="flex items-center gap-4 text-slate-300 pt-1">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-frp" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> FRP (Google)</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-icloud" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> iCloud</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-miaccount" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Mi Account</label>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#121a2b] border border-slate-800/80 p-3 rounded-xl space-y-2">
+                            <div class="flex items-center gap-1.5 font-bold text-slate-200">
+                                <i data-lucide="signal" class="w-3.5 h-3.5 text-[#00ff66]"></i> Bloqueos de Red / Operador
+                            </div>
+                            <label class="flex items-center gap-2 cursor-pointer text-slate-300 pt-1">
+                                <input type="checkbox" id="chk-simlock" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Banda / SIM Lock (Liberación)
+                            </label>
+                        </div>
+
+                        <div class="bg-[#121a2b] border border-slate-800/80 p-3 rounded-xl space-y-2">
+                            <div class="flex items-center gap-1.5 font-bold text-slate-200">
+                                <i data-lucide="credit-card" class="w-3.5 h-3.5 text-[#00ff66]"></i> Bloqueos por Financiamiento
+                            </div>
+                            <div class="flex items-center gap-4 text-slate-300">
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-payjoy" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> PayJoy</label>
+                                <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-macropay" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> Macropay</label>
+                            </div>
+                            <input type="text" id="rep-otro-credito" placeholder="Otro sistema de renta / crédito" class="w-full bg-[#0b101a] border border-slate-700/80 rounded-lg p-2 text-white focus:outline-none focus:border-[#00ff66]">
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PASO 5: INSPECCIÓN DE ENTRADA -->
+                <div class="space-y-3">
+                    <div class="text-[11px] font-bold text-[#00ff66] uppercase tracking-wider">PASO 5: INSPECCIÓN & DIAGNÓSTICO DE ENTRADA (PROTECCIÓN TALLER)</div>
+                    
+                    <div class="bg-[#121a2b] border border-emerald-500/30 p-4 rounded-xl space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 font-bold text-white">
+                                <i data-lucide="zap" class="w-4 h-4 text-[#00ff66]"></i> Prueba con Medidor / USB Tester
+                            </div>
+                            <span class="text-[10px] text-emerald-400">Consumo al ingresar</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-slate-400 mb-1">Voltaje Detectado (V) *</label>
+                                <div class="relative">
+                                    <input type="number" id="rep-voltaje" step="0.1" value="5.2" placeholder="5.2" class="w-full bg-[#0b101a] border border-slate-700 rounded-lg p-2.5 text-white font-mono focus:outline-none focus:border-[#00ff66]">
+                                    <span class="absolute right-3 top-2.5 text-slate-500 font-bold">V</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-slate-400 mb-1">Amperaje de Consumo (A) *</label>
+                                <div class="relative">
+                                    <input type="number" id="rep-amperaje" step="0.01" value="0.6" placeholder="0.60" class="w-full bg-[#0b101a] border border-slate-700 rounded-lg p-2.5 text-white font-mono focus:outline-none focus:border-[#00ff66]">
+                                    <span class="absolute right-3 top-2.5 text-slate-500 font-bold">A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="chk-enciende" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> <span class="text-white font-medium">Enciende</span>
+                        </label>
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="chk-touch-ok" checked class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> <span class="text-white font-medium">Touch / Display OK</span>
+                        </label>
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="chk-carga-ok" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> <span class="text-white font-medium">Centro de Carga OK</span>
+                        </label>
+                        <label class="bg-[#121a2b] border border-slate-800 p-3 rounded-xl flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="chk-camaras-ok" class="rounded border-slate-700 bg-slate-900 text-[#00ff66]"> <span class="text-white font-medium">Cámaras OK</span>
+                        </label>
+                    </div>
+
+                    <!-- CONDICIONES FÍSICAS (PROTECCIÓN DEL TALLER) -->
+                    <div class="space-y-3 bg-[#0d131f] p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs font-semibold text-rose-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                            Estado Físico del Equipo (Protección del Taller)
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs text-slate-300">
+                            <!-- Nuevos campos solicitados -->
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-rayones" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Rayones / Marcas
+                            </label>
+                            
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-tapa-rota" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Tapa Rota / Estrellada
+                            </label>
+                            
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-despintado" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Despintado / Desgastado
+                            </label>
+                            
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-camara-rota" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Cristal de Cámara Roto
+                            </label>
+                            
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-huella-fallo" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Huella / FaceID No Funciona
+                            </label>
+
+                            <!-- Aspectos físicos adicionales para prevención -->
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-chasis-doblado" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Chasis Doblado / Curveado
+                            </label>
+
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-pantalla-despegada" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Pantalla Despegada / Suelta
+                            </label>
+
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-botones-dañados" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Botones Duro / Hundidos / Mal
+                            </label>
+
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-humedad-sulfato" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Muestra Humedad / Sulfato
+                            </label>
+
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-700 cursor-pointer transition">
+                                <input type="checkbox" id="chk-falta-tornillos" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Faltan Tornillos / Piezas
+                            </label>
+
+                            <label class="flex items-center gap-2 bg-[#131c2e] p-2 rounded-lg border border-slate-800 hover:border-slate-[#00ff66]/30 cursor-pointer transition">
+                                <input type="checkbox" id="chk-sin-sim-sd" class="rounded bg-slate-800 border-slate-700 text-[#00ff66] focus:ring-0">
+                                Sin Chip SIM / Sin MicroSD
+                            </label>
+                        </div>
+
+                        <!-- Campo de detalles o notas de detalles estéticos adicionales -->
+                        <div class="mt-2">
+                            <input type="text" id="rep-observaciones-fisicas" placeholder="Observaciones físicas detalladas (ej: abolladura en esquina superior derecha)..." class="w-full bg-[#131c2e] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#00ff66]/50 transition">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PASO 6: PRESUPUESTO & ASIGNACIÓN -->
+                <div class="space-y-3">
+                    <div class="text-[11px] font-bold text-[#00ff66] uppercase tracking-wider">PASO 6: PRESUPUESTO & ASIGNACIÓN</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-slate-400 mb-1">Técnico Asignado</label>
+                            <select id="rep-tecnico" class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white focus:outline-none focus:border-[#00ff66]">
+                                <option value="Técnico Principal">Técnico Principal</option>
+                                <option value="Auxiliar">Auxiliar Taller</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Costo Estimado ($)</label>
+                            <input type="number" id="rep-costo" value="800" placeholder="0.00" class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white font-mono focus:outline-none focus:border-[#00ff66]">
+                        </div>
+                        <div>
+                            <label class="block text-slate-400 mb-1">Anticipo ($)</label>
+                            <input type="number" id="rep-anticipo" value="0" placeholder="0.00" class="w-full bg-[#121a2b] border border-slate-700/80 rounded-xl p-2.5 text-white font-mono focus:outline-none focus:border-[#00ff66]">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Acciones Inferiores -->
+            <div class="p-4 border-t border-slate-800/80 flex justify-end gap-3 bg-[#0e1626]">
+                <button onclick="cerrarModalReparacion()" class="px-5 py-2.5 text-slate-400 hover:text-white text-xs font-semibold">Cancelar</button>
+                <button onclick="guardarOrdenReparacion()" class="bg-[#00e65c] hover:bg-[#00ff66] text-black font-bold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(0,255,102,0.3)] transition">
+                    <i data-lucide="save" class="w-4 h-4"></i> Guardar Orden
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modal-orden-qr" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[70] hidden">
+        <div class="bg-[#0d131f] border border-slate-700 rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
+            <div class="flex justify-between items-center mb-4"><h2 class="text-base font-bold text-white">Orden guardada</h2><button onclick="cerrarQROrden()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+            <p id="orden-qr-folio" class="text-[#00ff66] font-mono font-bold text-lg"></p>
+            <p id="orden-qr-equipo" class="text-xs text-slate-400 mb-4"></p>
+            <div class="bg-white rounded-xl p-3 inline-block"><img id="orden-qr-imagen" src="" class="w-64 h-64" alt="Código QR de la orden"></div>
+            <p id="orden-qr-mensaje" class="text-[11px] text-slate-500 mt-4">Presenta este código para identificar y consultar la orden.</p>
+            <a id="orden-qr-enlace" class="hidden mt-2 text-xs text-emerald-300 underline underline-offset-4" target="_blank" rel="noopener noreferrer">Abrir seguimiento en línea</a>
+            <div class="flex gap-2 mt-5"><button onclick="imprimirQROrden()" class="flex-1 bg-[#00e65c] text-black font-bold rounded-lg py-2.5 text-xs"><i data-lucide="printer" class="w-4 h-4 inline-block mr-1"></i> Imprimir</button><button onclick="cerrarQROrden()" class="flex-1 bg-[#172338] text-slate-200 font-bold rounded-lg py-2.5 text-xs">Cerrar</button></div>
+        </div>
+    </div>
+
+    <div id="modal-cobro-entrega" class="fixed inset-0 z-[125] hidden bg-black/80 p-4" onclick="if (event.target === this) cancelarCobroEntrega()">
+        <section role="dialog" aria-modal="true" aria-labelledby="cobro-entrega-titulo" class="mx-auto mt-[10vh] w-full max-w-md overflow-hidden rounded-xl border border-slate-700 bg-[#0d131f] shadow-2xl">
+            <header class="flex items-start justify-between gap-4 border-b border-slate-800 p-5"><div><h2 id="cobro-entrega-titulo" class="text-lg font-bold text-white">Cobro al entregar</h2><p id="cobro-entrega-folio" class="mt-1 font-mono text-xs text-emerald-300"></p></div><button type="button" onclick="cancelarCobroEntrega()" class="rounded border border-slate-700 px-2 py-1 text-xs text-slate-400" title="Cerrar">Esc</button></header>
+            <div class="space-y-4 p-5">
+                <p id="cobro-entrega-equipo" class="text-sm text-white"></p>
+                <div class="space-y-2 rounded-lg border border-slate-800 bg-[#131c2e] p-3 text-xs">
+                    <div class="flex justify-between text-slate-400"><span>Total reparación</span><strong id="cobro-total" class="text-white"></strong></div>
+                    <div class="flex justify-between text-slate-400"><span>Anticipo y abonos</span><strong id="cobro-abonos" class="text-white"></strong></div>
+                    <div class="flex justify-between border-t border-slate-700 pt-2 text-sm font-bold"><span class="text-white">Saldo a cobrar</span><strong id="cobro-saldo" class="text-emerald-300"></strong></div>
+                </div>
+                <label class="block text-xs text-slate-300">Método de pago<select id="cobro-metodo" class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"><option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option><option>Otro</option></select></label>
+                <p class="text-[11px] leading-5 text-slate-500">Al confirmar se registrará el pago en ventas y caja, y la orden cambiará a Entregado. Cancelar mantiene el estado actual.</p>
+            </div>
+            <footer class="flex justify-end gap-2 border-t border-slate-800 p-4"><button type="button" onclick="cancelarCobroEntrega()" class="rounded-lg border border-slate-700 px-4 py-2 text-xs text-slate-300">Cancelar</button><button id="cobro-confirmar" type="button" onclick="confirmarCobroEntrega()" class="rounded-lg bg-[#00e65c] px-4 py-2 text-xs font-bold text-black">Cobrar y entregar</button></footer>
+        </section>
+    </div>
+
+    <div id="modal-recepcion-express" class="fixed inset-0 z-[115] hidden bg-black/80 p-4" onclick="if (event.target === this) cerrarRecepcionExpress()">
+        <section role="dialog" aria-modal="true" aria-labelledby="recepcion-express-titulo" class="mx-auto mt-[5vh] w-full max-w-2xl overflow-hidden rounded-xl border border-slate-700 bg-[#0d131f] shadow-2xl">
+            <header class="flex items-start justify-between gap-4 border-b border-slate-800 p-5"><div><h2 id="recepcion-express-titulo" class="text-lg font-bold text-white">Recepción express</h2><p class="mt-1 text-xs text-slate-400">Registra los datos esenciales. Puedes completar el diagnóstico después.</p></div><button type="button" onclick="cerrarRecepcionExpress()" class="rounded border border-slate-700 px-2 py-1 text-xs text-slate-400" title="Cerrar">Esc</button></header>
+            <form id="form-recepcion-express" class="space-y-4 p-5" onsubmit="event.preventDefault(); guardarRecepcionExpress();">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <label class="text-xs text-slate-300">Cliente<input id="express-cliente" maxlength="100" value="Cliente de mostrador" class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"></label>
+                    <label class="text-xs text-slate-300">Teléfono (opcional)<input id="express-telefono" type="tel" maxlength="24" placeholder="+52 555 123 4567" class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"></label>
+                    <label class="text-xs text-slate-300">Tipo de equipo<select id="express-tipo" class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"><option>Celular / Smartphone</option><option>Tablet / iPad</option><option>Laptop / PC</option><option>Consola / Otro</option></select></label>
+                    <label class="text-xs text-slate-300">Marca<input id="express-marca" required maxlength="60" placeholder="Samsung, Apple..." class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"></label>
+                    <label class="text-xs text-slate-300">Modelo<input id="express-modelo" required maxlength="100" placeholder="Galaxy A55" class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"></label>
+                    <label class="text-xs text-slate-300 sm:col-span-2">Falla reportada<input id="express-falla" required maxlength="500" placeholder="No carga, pantalla rota..." class="mt-1 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-sm text-white"></label>
+                </div>
+                <div class="flex items-start gap-2 border-t border-slate-800 pt-4"><input id="express-aviso-whatsapp" type="checkbox" class="mt-0.5 accent-emerald-400"><label for="express-aviso-whatsapp" class="text-xs leading-5 text-slate-400">Al guardar, preparar un mensaje de WhatsApp para el cliente. No se enviará hasta confirmarlo en WhatsApp.</label></div>
+                <footer class="flex justify-end gap-2 border-t border-slate-800 pt-4"><button type="button" onclick="cerrarRecepcionExpress()" class="rounded-lg border border-slate-700 px-4 py-2 text-xs text-slate-300">Cancelar</button><button type="submit" class="flex items-center gap-2 rounded-lg bg-[#00e65c] px-4 py-2 text-xs font-bold text-black"><i data-lucide="save" class="h-4 w-4"></i> Registrar y crear folio</button></footer>
+            </form>
+        </section>
+    </div>
+
+    <div id="modal-importar-catalogo" class="fixed inset-0 z-[120] hidden bg-black/80 p-4" onclick="if (event.target === this) cerrarImportacionProveedor()">
+        <section role="dialog" aria-modal="true" aria-labelledby="importacion-proveedor-titulo" class="mx-auto mt-[4vh] flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-slate-700 bg-[#0d131f] shadow-2xl">
+            <header class="flex items-start justify-between gap-4 border-b border-slate-800 p-5">
+                <div class="min-w-0"><h2 id="importacion-proveedor-titulo" class="text-lg font-bold text-white">Importar catálogo del proveedor</h2><p id="importacion-proveedor-archivo" class="mt-1 truncate text-xs text-slate-400"></p></div>
+                <button type="button" onclick="cerrarImportacionProveedor()" class="rounded border border-slate-700 px-2 py-1 text-xs text-slate-400" title="Cerrar">Esc</button>
+            </header>
+            <div class="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[280px_1fr]">
+                <aside class="overflow-y-auto border-b border-slate-800 p-4 lg:border-b-0 lg:border-r">
+                    <label class="mb-2 block text-xs font-semibold text-slate-300" for="importacion-proveedor-nombre">Proveedor</label>
+                    <input id="importacion-proveedor-nombre" type="text" maxlength="80" class="mb-4 w-full rounded-lg border border-slate-700 bg-[#131c2e] p-2.5 text-xs text-white">
+                    <div class="mb-2 flex items-center justify-between"><h3 class="text-xs font-bold text-white">Hojas / categorías</h3><span class="text-[10px] text-slate-500">Elige qué importar</span></div>
+                    <div id="importacion-proveedor-hojas" class="divide-y divide-slate-800"></div>
+                    <p id="importacion-proveedor-ayuda" class="mt-4 text-[11px] leading-5 text-slate-500">El costo se toma de la lista. La venta estimada usa la regla actual del cotizador. Esto no crea ni modifica existencias físicas.</p>
+                </aside>
+                <div class="flex min-h-0 flex-col overflow-hidden p-4">
+                    <p id="importacion-proveedor-resumen" class="mb-3 text-xs text-slate-400"></p>
+                    <div id="importacion-proveedor-muestra" class="min-h-0 flex-1 overflow-auto rounded-lg border border-slate-800"></div>
+                </div>
+            </div>
+            <footer class="flex items-center justify-end gap-3 border-t border-slate-800 p-4">
+                <button type="button" onclick="cerrarImportacionProveedor()" class="rounded-lg border border-slate-700 px-4 py-2 text-xs text-slate-300 hover:bg-slate-800">Cancelar</button>
+                <button id="importacion-proveedor-confirmar" type="button" onclick="confirmarImportacionProveedor()" class="rounded-lg bg-[#00e65c] px-4 py-2 text-xs font-bold text-black hover:bg-[#00ff66]">Actualizar cotizador</button>
+            </footer>
+        </section>
+    </div>
+
+    <!-- Script Principal -->
+    <script src="app.js"></script>
+    <script src="funciones-nuevas.js"></script>
+    <script src="funciones-clientes.js"></script>
+    <script src="funciones-inventario.js"></script>
+    <script src="funciones-reparaciones.js"></script>
+    <script src="funciones-integracion.js"></script>
+    <script src="funciones-tecnicos.js"></script>
+    <script src="funciones-tecnicos-display.js"></script>
+    <script src="funciones-dashboard-tecnicos.js"></script>
+    <script src="funciones-usuarios.js"></script>
+    <script src="funciones-usuarios.js"></script>
+    <script src="extensiones.js"></script>
+    <script>
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+            navigator.serviceWorker.register('/sw.js').catch(error => console.warn('PWA sin caché offline:', error.message));
+        }
+    </script>
+</body>
+</html>
