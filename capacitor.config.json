@@ -1,0 +1,7 @@
+{
+  "appId": "com.tuempresa.taller",
+  "appName": "Taller Celulares",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "allowMixedContent": false }
+}
